@@ -2,39 +2,39 @@
 
 use std::collections::HashMap;
 
-struct PasswordManager {
+struct CredManager {
     master_pass: String,
-    passwords: HashMap<String, String>,
+    tokens: HashMap<String, String>,
 }
 
-impl PasswordManager {
+impl CredManager {
     pub fn new(master_pass: String) -> Self {
-        PasswordManager {
+        CredManager {
             master_pass,
-            passwords: Default::default(),
+            tokens: Default::default(),
         }
     }
 
-    pub fn lock(&mut self) -> PasswordManager {
-        PasswordManager {
+    pub fn lock(&mut self) -> CredManager {
+        CredManager {
             master_pass: self.master_pass.clone(),
-            passwords: self.passwords.clone(),
+            tokens: self.tokens.clone(),
         }
     }
 
-    pub fn unlock(&mut self, master_pass: String) -> PasswordManager {
-        PasswordManager {
+    pub fn unlock(&mut self, master_pass: String) -> CredManager {
+        CredManager {
             master_pass: self.master_pass.clone(),
-            passwords: self.passwords.clone(),
+            tokens: self.tokens.clone(),
         }
     }
 
-    pub fn list_passwords(&self) -> &HashMap<String, String> {
-        &self.passwords
+    pub fn list_tokens(&self) -> &HashMap<String, String> {
+        &self.tokens
     }
 
-    pub fn add_password(&mut self, username: String, password: String) {
-        self.passwords.insert(username, password);
+    pub fn add_token(&mut self, username: String, token: String) {
+        self.tokens.insert(username, token);
     }
 
     pub fn encryption(&self) -> String {
@@ -48,12 +48,12 @@ impl PasswordManager {
 
 // Risk: Users could run into runtime error or unexpected result
 fn main() {
-    let mut manager = PasswordManager::new("password123".to_owned());
-    manager.list_passwords();
+    let mut manager = CredManager::new("password123".to_owned());
+    manager.list_tokens();
     manager.unlock("password123".to_owned());
     manager.lock();
 
     // manager.unlock("password123".to_owned());
-    // manager.list_passwords();
+    // manager.list_tokens();
     // manager.lock();
 }

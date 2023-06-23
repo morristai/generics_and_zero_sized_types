@@ -6,43 +6,43 @@ use std::marker::PhantomData;
 struct Locked;
 struct Unlocked;
 
-// PasswordManager<Locked> != PasswordManager<Unlocked>
+// CredManager<Locked> != CredManager<Unlocked>
 
-struct PasswordManager<State = Locked> {
+struct CredManager<State = Locked> {
     master_pass: String,
-    passwords: HashMap<String, String>,
+    tokens: HashMap<String, String>,
     state: PhantomData<State>,
 }
 
-impl PasswordManager<Locked> {
-    pub fn unlock(self, master_pass: String) -> PasswordManager<Unlocked> {
-        PasswordManager {
+impl CredManager<Locked> {
+    pub fn unlock(self, master_pass: String) -> CredManager<Unlocked> {
+        CredManager {
             master_pass: self.master_pass,
-            passwords: self.passwords,
+            tokens: self.tokens,
             state: PhantomData,
         }
     }
 }
 
-impl PasswordManager<Unlocked> {
-    pub fn lock(self) -> PasswordManager<Locked> {
-        PasswordManager {
+impl CredManager<Unlocked> {
+    pub fn lock(self) -> CredManager<Locked> {
+        CredManager {
             master_pass: self.master_pass,
-            passwords: self.passwords,
+            tokens: self.tokens,
             state: PhantomData,
         }
     }
 
-    pub fn list_passwords(&self) -> &HashMap<String, String> {
-        &self.passwords
+    pub fn list_tokens(&self) -> &HashMap<String, String> {
+        &self.tokens
     }
 
-    pub fn add_password(&mut self, username: String, password: String) {
-        self.passwords.insert(username, password);
+    pub fn add_token(&mut self, username: String, token: String) {
+        self.tokens.insert(username, token);
     }
 }
 
-impl<State> PasswordManager<State> {
+impl<State> CredManager<State> {
     pub fn encryption(&self) -> String {
         todo!()
     }
@@ -52,19 +52,19 @@ impl<State> PasswordManager<State> {
     }
 }
 
-impl PasswordManager {
+impl CredManager {
     pub fn new(master_pass: String) -> Self {
-        PasswordManager {
+        CredManager {
             master_pass,
-            passwords: Default::default(),
+            tokens: Default::default(),
             state: PhantomData,
         }
     }
 }
 
 fn main() {
-    let mut manager = PasswordManager::new("password123".to_owned());
+    let mut manager = CredManager::new("password123".to_owned());
     let manager = manager.unlock("password123".to_owned());
-    manager.list_passwords();
+    manager.list_tokens();
     manager.lock();
 }

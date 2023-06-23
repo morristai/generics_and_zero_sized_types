@@ -2,28 +2,28 @@
 
 use std::collections::HashMap;
 
-struct LockedPasswordManager {
+struct LockedCredManager {
     master_pass: String,
-    passwords: HashMap<String, String>,
+    tokens: HashMap<String, String>,
 }
 
-struct UnlockedPasswordManager {
+struct UnlockedCredManager {
     master_pass: String,
-    passwords: HashMap<String, String>,
+    tokens: HashMap<String, String>,
 }
 
-impl LockedPasswordManager {
+impl LockedCredManager {
     pub fn new(master_pass: String) -> Self {
-        LockedPasswordManager {
+        LockedCredManager {
             master_pass,
-            passwords: Default::default(),
+            tokens: Default::default(),
         }
     }
 
-    pub fn unlock(self, master_pass: String) -> LockedPasswordManager {
-        PasswordManager {
+    pub fn unlock(self, master_pass: String) -> LockedCredManager {
+        CredManager {
             master_pass: self.master_pass,
-            passwords: self.passwords,
+            tokens: self.tokens,
         }
     }
 
@@ -36,20 +36,20 @@ impl LockedPasswordManager {
     }
 }
 
-impl UnlockedPasswordManager {
-    pub fn lock(self) -> LockedPasswordManager {
-        LockedPasswordManager {
+impl UnlockedCredManager {
+    pub fn lock(self) -> LockedCredManager {
+        LockedCredManager {
             master_pass: self.master_pass,
-            passwords: self.passwords,
+            tokens: self.tokens,
         }
     }
 
-    pub fn list_passwords(&self) -> &HashMap<String, String> {
-        &self.passwords
+    pub fn list_tokens(&self) -> &HashMap<String, String> {
+        &self.tokens
     }
 
-    pub fn add_password(&mut self, username: String, password: String) {
-        self.passwords.insert(username, password);
+    pub fn add_token(&mut self, username: String, token: String) {
+        self.tokens.insert(username, token);
     }
 
     pub fn encryption(&self) -> String {
@@ -65,8 +65,8 @@ impl UnlockedPasswordManager {
 // 1. Duplicate fields
 // 2. implement common method for both struct
 fn main() {
-    let mut manager = LockedPasswordManager::new("password123".to_owned());
+    let mut manager = LockedCredManager::new("password123".to_owned());
     let manager = manager.unlock("password123".to_owned());
-    manager.list_passwords();
+    manager.list_tokens();
     manager.lock();
 }
