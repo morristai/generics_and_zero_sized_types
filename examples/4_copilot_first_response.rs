@@ -66,7 +66,8 @@ impl CredManagerState for LockedState {
         if self.master_pass == master_pass {
             Box::new(UnlockedState::new())
         } else {
-            Box::new(self)
+            // Copilot return type: Box<Box<LockedState>>, which will cause error.
+            self
         }
     }
 
@@ -101,6 +102,7 @@ impl UnlockedState {
 
 impl CredManagerState for UnlockedState {
     fn lock(self: Box<Self>) -> Box<dyn CredManagerState> {
+        //
         Box::new(LockedState::new(self.master_pass))
     }
 
@@ -126,11 +128,11 @@ impl CredManagerState for UnlockedState {
 }
 
 fn main() {
-    let mut manager = CredManager::new("master_pass".to_string());
-    manager.lock();
-    if let Some(tokens) = manager.list_tokens() {
-        println!("Tokens: {:?}", tokens);
-    } else {
-        println!("No tokens");
-    }
+    // let mut manager = CredManager::new("master_pass".to_string());
+    // manager.lock();
+    // if let Some(tokens) = manager.list_tokens() {
+    //     println!("Tokens: {:?}", tokens);
+    // } else {
+    //     println!("No tokens");
+    // }
 }
